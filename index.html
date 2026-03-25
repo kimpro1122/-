@@ -5,18 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>정사각형 텍스트 이미지 생성기</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
 
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: 'Noto Sans KR', sans-serif;
       background: #f5f6f8;
       color: #1f2937;
     }
+
     .wrap {
       max-width: 1200px;
       margin: 0 auto;
@@ -26,111 +28,142 @@
       gap: 24px;
       min-height: 100vh;
     }
-    .panel, .preview-box {
-      background: #fff;
+
+    .panel,
+    .preview-box {
+      background: #ffffff;
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
       padding: 20px;
     }
+
     h1 {
       margin: 0 0 18px;
       font-size: 24px;
       line-height: 1.35;
     }
+
     .desc {
       margin: 0 0 18px;
       font-size: 14px;
       line-height: 1.6;
       color: #4b5563;
     }
+
     .group { margin-bottom: 16px; }
+
     label {
       display: block;
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 700;
     }
-    textarea, input, select, button {
+
+    textarea,
+    input,
+    select,
+    button {
       font-family: inherit;
     }
-    textarea, input[type="number"], select {
+
+    textarea,
+    input[type="number"],
+    select {
       width: 100%;
       border: 1px solid #d1d5db;
       border-radius: 12px;
       padding: 12px 14px;
       font-size: 14px;
-      background: #fff;
+      background: #ffffff;
     }
+
     textarea {
       min-height: 200px;
       resize: vertical;
       line-height: 1.6;
       white-space: pre-wrap;
     }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
     .hint {
       margin-top: 6px;
       font-size: 12px;
       color: #6b7280;
       line-height: 1.5;
     }
+
     .swatch-group {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 10px;
     }
+
     .swatch {
       width: 100%;
       aspect-ratio: 1 / 1;
       border-radius: 12px;
       border: 2px solid #d1d5db;
       cursor: pointer;
-      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
       padding: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      background-clip: padding-box;
     }
+
     .swatch:hover { transform: translateY(-1px); }
+
     .swatch.active {
       border-color: #111827;
-      box-shadow: 0 0 0 3px rgba(17,24,39,0.12);
+      box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
     }
+
     .swatch.white {
       border-color: #9ca3af;
     }
+
     .btns {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 18px;
     }
-    button.action {
+
+    .action-btn {
       border: 0;
       border-radius: 14px;
       padding: 14px 16px;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform .15s ease;
+      transition: transform 0.15s ease;
     }
-    button.action:hover { transform: translateY(-1px); }
-    button.action:active { transform: translateY(0); }
+
+    .action-btn:hover { transform: translateY(-1px); }
+    .action-btn:active { transform: translateY(0); }
+
     .primary {
       background: #111827;
-      color: #fff;
+      color: #ffffff;
     }
+
     .secondary {
       background: #e5e7eb;
       color: #111827;
     }
+
     .preview-box {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
     }
+
     .preview-header {
       width: 100%;
       display: flex;
@@ -140,10 +173,12 @@
       margin-bottom: 16px;
       flex-wrap: wrap;
     }
+
     .meta {
       font-size: 13px;
       color: #4b5563;
     }
+
     .canvas-wrap {
       width: min(100%, 760px);
       aspect-ratio: 1 / 1;
@@ -155,11 +190,13 @@
       align-items: center;
       justify-content: center;
     }
+
     canvas {
       width: 100%;
       height: 100%;
       display: block;
     }
+
     .footer-note {
       width: 100%;
       margin-top: 14px;
@@ -167,6 +204,7 @@
       color: #6b7280;
       line-height: 1.6;
     }
+
     @media (max-width: 900px) {
       .wrap {
         grid-template-columns: 1fr;
@@ -210,31 +248,31 @@
         <div class="group">
           <label>배경색</label>
           <div class="swatch-group" id="bgSwatches">
-            <button type="button" class="swatch active" data-role="bg" data-color="#111111" style="background:#111111" aria-label="검은색"></button>
-            <button type="button" class="swatch white" data-role="bg" data-color="#ffffff" style="background:#ffffff" aria-label="흰색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#ef4444" style="background:#ef4444" aria-label="빨간색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#f59e0b" style="background:#f59e0b" aria-label="주황색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#eab308" style="background:#eab308" aria-label="노란색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#22c55e" style="background:#22c55e" aria-label="초록색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#06b6d4" style="background:#06b6d4" aria-label="민트색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#3b82f6" style="background:#3b82f6" aria-label="파란색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="보라색"></button>
-            <button type="button" class="swatch" data-role="bg" data-color="#ec4899" style="background:#ec4899" aria-label="핑크색"></button>
+            <button type="button" class="swatch active" data-color="#111111" style="background:#111111" aria-label="배경색 검은색"></button>
+            <button type="button" class="swatch white" data-color="#ffffff" style="background:#ffffff" aria-label="배경색 흰색"></button>
+            <button type="button" class="swatch" data-color="#ef4444" style="background:#ef4444" aria-label="배경색 빨간색"></button>
+            <button type="button" class="swatch" data-color="#f59e0b" style="background:#f59e0b" aria-label="배경색 주황색"></button>
+            <button type="button" class="swatch" data-color="#eab308" style="background:#eab308" aria-label="배경색 노란색"></button>
+            <button type="button" class="swatch" data-color="#22c55e" style="background:#22c55e" aria-label="배경색 초록색"></button>
+            <button type="button" class="swatch" data-color="#06b6d4" style="background:#06b6d4" aria-label="배경색 민트색"></button>
+            <button type="button" class="swatch" data-color="#3b82f6" style="background:#3b82f6" aria-label="배경색 파란색"></button>
+            <button type="button" class="swatch" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="배경색 보라색"></button>
+            <button type="button" class="swatch" data-color="#ec4899" style="background:#ec4899" aria-label="배경색 핑크색"></button>
           </div>
         </div>
         <div class="group">
           <label>글자색</label>
           <div class="swatch-group" id="textSwatches">
-            <button type="button" class="swatch" data-role="text" data-color="#111111" style="background:#111111" aria-label="검은색"></button>
-            <button type="button" class="swatch white active" data-role="text" data-color="#ffffff" style="background:#ffffff" aria-label="흰색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#ef4444" style="background:#ef4444" aria-label="빨간색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#f59e0b" style="background:#f59e0b" aria-label="주황색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#eab308" style="background:#eab308" aria-label="노란색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#22c55e" style="background:#22c55e" aria-label="초록색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#06b6d4" style="background:#06b6d4" aria-label="민트색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#3b82f6" style="background:#3b82f6" aria-label="파란색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="보라색"></button>
-            <button type="button" class="swatch" data-role="text" data-color="#ec4899" style="background:#ec4899" aria-label="핑크색"></button>
+            <button type="button" class="swatch" data-color="#111111" style="background:#111111" aria-label="글자색 검은색"></button>
+            <button type="button" class="swatch white active" data-color="#ffffff" style="background:#ffffff" aria-label="글자색 흰색"></button>
+            <button type="button" class="swatch" data-color="#ef4444" style="background:#ef4444" aria-label="글자색 빨간색"></button>
+            <button type="button" class="swatch" data-color="#f59e0b" style="background:#f59e0b" aria-label="글자색 주황색"></button>
+            <button type="button" class="swatch" data-color="#eab308" style="background:#eab308" aria-label="글자색 노란색"></button>
+            <button type="button" class="swatch" data-color="#22c55e" style="background:#22c55e" aria-label="글자색 초록색"></button>
+            <button type="button" class="swatch" data-color="#06b6d4" style="background:#06b6d4" aria-label="글자색 민트색"></button>
+            <button type="button" class="swatch" data-color="#3b82f6" style="background:#3b82f6" aria-label="글자색 파란색"></button>
+            <button type="button" class="swatch" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="글자색 보라색"></button>
+            <button type="button" class="swatch" data-color="#ec4899" style="background:#ec4899" aria-label="글자색 핑크색"></button>
           </div>
         </div>
       </div>
@@ -259,8 +297,8 @@
       </div>
 
       <div class="btns">
-        <button class="action secondary" id="renderBtn">미리보기 갱신</button>
-        <button class="action primary" id="downloadBtn">JPG 저장</button>
+        <button type="button" class="action-btn secondary" id="renderBtn">미리보기 갱신</button>
+        <button type="button" class="action-btn primary" id="downloadBtn">JPG 저장</button>
       </div>
     </section>
 
@@ -299,44 +337,48 @@
       return Math.max(min, Math.min(max, value));
     }
 
-    function applyCanvasSize(size) {
-      const safeSize = clamp(parseInt(size, 10) || 1080, 200, 4000);
+    function applyCanvasSize(sizeValue) {
+      const safeSize = clamp(parseInt(sizeValue, 10) || 1080, 200, 4000);
       canvas.width = safeSize;
       canvas.height = safeSize;
-      metaText.textContent = `${safeSize} × ${safeSize} JPG`;
+      metaText.textContent = safeSize + ' × ' + safeSize + ' JPG';
       return safeSize;
     }
 
-    function wrapParagraph(paragraph, ctx, maxWidth) {
+    function wrapParagraph(paragraph, maxWidth) {
       if (!paragraph) return [''];
-      const result = [];
+
+      const lines = [];
       let current = '';
-      const chars = [...paragraph];
+      const chars = Array.from(paragraph);
+
       for (const ch of chars) {
         const test = current + ch;
         if (ctx.measureText(test).width <= maxWidth || current.length === 0) {
           current = test;
         } else {
-          result.push(current);
+          lines.push(current);
           current = ch;
         }
       }
-      if (current) result.push(current);
-      return result;
+
+      if (current) lines.push(current);
+      return lines;
     }
 
-    function getWrappedLines(text, ctx, maxWidth) {
-      const paragraphs = text.replace(/
+    function getWrappedLines(text, maxWidth) {
+      const paragraphs = String(text).replace(/
 /g, '
 ').split('
 ');
       const lines = [];
+
       paragraphs.forEach((paragraph, index) => {
-        const wrapped = wrapParagraph(paragraph, ctx, maxWidth);
-        lines.push(...wrapped);
-        if (index < paragraphs.length - 1) lines.push('
-');
+        const wrapped = wrapParagraph(paragraph, maxWidth);
+        lines.push.apply(lines, wrapped);
+        if (index < paragraphs.length - 1) lines.push('__BREAK__');
       });
+
       return lines;
     }
 
@@ -349,31 +391,34 @@
 
       while (fontSize >= minFontSize) {
         const lineHeight = Math.round(fontSize * 1.35);
-        ctx.font = `${fontWeight} ${fontSize}px 'Noto Sans KR', sans-serif`;
-        const rawLines = getWrappedLines(text, ctx, maxWidth);
-        const visibleLines = rawLines.filter(line => line !== '
-');
-        const explicitBreakCount = rawLines.filter(line => line === '
-').length;
-        const totalLineSlots = visibleLines.length + explicitBreakCount;
+        ctx.font = fontWeight + ' ' + fontSize + "px 'Noto Sans KR', sans-serif";
+
+        const rawLines = getWrappedLines(text, maxWidth);
+        const breakCount = rawLines.filter(line => line === '__BREAK__').length;
+        const visibleLines = rawLines.filter(line => line !== '__BREAK__');
+        const totalLineSlots = visibleLines.length + breakCount;
         const totalHeight = totalLineSlots * lineHeight;
         const tooWide = visibleLines.some(line => ctx.measureText(line).width > maxWidth + 1);
 
         if (!tooWide && totalHeight <= maxHeight) {
-          return { fontSize, lineHeight, rawLines, totalHeight };
+          return {
+            fontSize,
+            lineHeight,
+            rawLines,
+            totalHeight
+          };
         }
+
         fontSize -= 1;
       }
 
       const fallbackFontSize = minFontSize;
       const fallbackLineHeight = Math.round(fallbackFontSize * 1.35);
-      ctx.font = `${fontWeight} ${fallbackFontSize}px 'Noto Sans KR', sans-serif`;
-      const rawLines = getWrappedLines(text, ctx, maxWidth);
-      const visibleLines = rawLines.filter(line => line !== '
-');
-      const explicitBreakCount = rawLines.filter(line => line === '
-').length;
-      const totalLineSlots = visibleLines.length + explicitBreakCount;
+      ctx.font = fontWeight + ' ' + fallbackFontSize + "px 'Noto Sans KR', sans-serif";
+      const rawLines = getWrappedLines(text, maxWidth);
+      const breakCount = rawLines.filter(line => line === '__BREAK__').length;
+      const visibleLines = rawLines.filter(line => line !== '__BREAK__');
+      const totalLineSlots = visibleLines.length + breakCount;
       const totalHeight = totalLineSlots * fallbackLineHeight;
 
       return {
@@ -386,26 +431,24 @@
 
     function draw() {
       const size = applyCanvasSize(canvasSizeInput.value);
-      const bgColor = selectedBgColor;
-      const textColor = selectedTextColor;
       const paddingRatio = parseFloat(paddingRatioSelect.value);
       const fontWeight = fontWeightSelect.value;
-      const text = textInput.value || ' ';
+      const text = textInput.value && textInput.value.length ? textInput.value : ' ';
 
       ctx.clearRect(0, 0, size, size);
-      ctx.fillStyle = bgColor;
+      ctx.fillStyle = selectedBgColor;
       ctx.fillRect(0, 0, size, size);
 
       const fit = fitText(text, size, paddingRatio, fontWeight);
-      ctx.font = `${fontWeight} ${fit.fontSize}px 'Noto Sans KR', sans-serif`;
-      ctx.fillStyle = textColor;
+      ctx.font = fontWeight + ' ' + fit.fontSize + "px 'Noto Sans KR', sans-serif";
+      ctx.fillStyle = selectedTextColor;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
       let currentY = size / 2 - fit.totalHeight / 2 + fit.lineHeight / 2;
+
       fit.rawLines.forEach(line => {
-        if (line === '
-') {
+        if (line === '__BREAK__') {
           currentY += fit.lineHeight;
           return;
         }
@@ -421,26 +464,28 @@
       const link = document.createElement('a');
       const stamp = new Date().toISOString().replace(/[:.]/g, '-');
       link.href = dataUrl;
-      link.download = `square-text-image-${canvas.width}x${canvas.height}-${stamp}.jpg`;
+      link.download = 'square-text-image-' + canvas.width + 'x' + canvas.height + '-' + stamp + '.jpg';
       link.click();
     }
 
-    function bindSwatches(container, role) {
+    function bindSwatches(container, target) {
       const buttons = container.querySelectorAll('.swatch');
       buttons.forEach(button => {
         button.addEventListener('click', () => {
           buttons.forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
-          const color = button.dataset.color;
-          if (role === 'bg') selectedBgColor = color;
-          if (role === 'text') selectedTextColor = color;
+          const color = button.getAttribute('data-color');
+          if (target === 'bg') selectedBgColor = color;
+          if (target === 'text') selectedTextColor = color;
           draw();
         });
       });
     }
 
-    [textInput, canvasSizeInput, jpgQualitySelect, paddingRatioSelect, fontWeightSelect]
-      .forEach(el => el.addEventListener('input', draw));
+    [textInput, canvasSizeInput, jpgQualitySelect, paddingRatioSelect, fontWeightSelect].forEach(el => {
+      el.addEventListener('input', draw);
+      el.addEventListener('change', draw);
+    });
 
     bindSwatches(bgSwatches, 'bg');
     bindSwatches(textSwatches, 'text');
