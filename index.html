@@ -2,10 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=([notofonts.github.io](https://notofonts.github.io/noto-docs/website/use/?utm_source=chatgpt.com))정사각형 텍스트 이미지 생성기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>정사각형 텍스트 이미지 생성기</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
     body {
@@ -24,7 +27,7 @@
       min-height: 100vh;
     }
     .panel, .preview-box {
-      background: #ffffff;
+      background: #fff;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.06);
       padding: 20px;
@@ -50,7 +53,7 @@
     textarea, input, select, button {
       font-family: inherit;
     }
-    textarea, input[type="number"], input[type="color"], select {
+    textarea, input[type="number"], select {
       width: 100%;
       border: 1px solid #d1d5db;
       border-radius: 12px;
@@ -75,26 +78,48 @@
       color: #6b7280;
       line-height: 1.5;
     }
+    .swatch-group {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .swatch {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      border: 2px solid #d1d5db;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+      padding: 0;
+    }
+    .swatch:hover { transform: translateY(-1px); }
+    .swatch.active {
+      border-color: #111827;
+      box-shadow: 0 0 0 3px rgba(17,24,39,0.12);
+    }
+    .swatch.white {
+      border-color: #9ca3af;
+    }
     .btns {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 18px;
     }
-    button {
+    button.action {
       border: 0;
       border-radius: 14px;
       padding: 14px 16px;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform .15s ease, opacity .15s ease;
+      transition: transform .15s ease;
     }
-    button:hover { transform: translateY(-1px); }
-    button:active { transform: translateY(0); }
+    button.action:hover { transform: translateY(-1px); }
+    button.action:active { transform: translateY(0); }
     .primary {
       background: #111827;
-      color: white;
+      color: #fff;
     }
     .secondary {
       background: #e5e7eb;
@@ -134,7 +159,6 @@
       width: 100%;
       height: 100%;
       display: block;
-      background: transparent;
     }
     .footer-note {
       width: 100%;
@@ -159,7 +183,8 @@
 
       <div class="group">
         <label for="textInput">텍스트 입력</label>
-        <textarea id="textInput" placeholder="여기에 문구를 입력하세요.&#10;엔터로 줄바꿈할 수 있습니다.">안녕하세요
+        <textarea id="textInput" placeholder="여기에 문구를 입력하세요.
+엔터로 줄바꿈할 수 있습니다.">안녕하세요
 정사각형 텍스트 이미지입니다</textarea>
         <div class="hint">엔터 입력 시 줄바꿈이 그대로 반영됩니다.</div>
       </div>
@@ -183,12 +208,34 @@
 
       <div class="row">
         <div class="group">
-          <label for="bgColor">배경색</label>
-          <input id="bgColor" type="color" value="#111111" />
+          <label>배경색</label>
+          <div class="swatch-group" id="bgSwatches">
+            <button type="button" class="swatch active" data-role="bg" data-color="#111111" style="background:#111111" aria-label="검은색"></button>
+            <button type="button" class="swatch white" data-role="bg" data-color="#ffffff" style="background:#ffffff" aria-label="흰색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#ef4444" style="background:#ef4444" aria-label="빨간색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#f59e0b" style="background:#f59e0b" aria-label="주황색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#eab308" style="background:#eab308" aria-label="노란색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#22c55e" style="background:#22c55e" aria-label="초록색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#06b6d4" style="background:#06b6d4" aria-label="민트색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#3b82f6" style="background:#3b82f6" aria-label="파란색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="보라색"></button>
+            <button type="button" class="swatch" data-role="bg" data-color="#ec4899" style="background:#ec4899" aria-label="핑크색"></button>
+          </div>
         </div>
         <div class="group">
-          <label for="textColor">글자색</label>
-          <input id="textColor" type="color" value="#ffffff" />
+          <label>글자색</label>
+          <div class="swatch-group" id="textSwatches">
+            <button type="button" class="swatch" data-role="text" data-color="#111111" style="background:#111111" aria-label="검은색"></button>
+            <button type="button" class="swatch white active" data-role="text" data-color="#ffffff" style="background:#ffffff" aria-label="흰색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#ef4444" style="background:#ef4444" aria-label="빨간색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#f59e0b" style="background:#f59e0b" aria-label="주황색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#eab308" style="background:#eab308" aria-label="노란색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#22c55e" style="background:#22c55e" aria-label="초록색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#06b6d4" style="background:#06b6d4" aria-label="민트색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#3b82f6" style="background:#3b82f6" aria-label="파란색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="보라색"></button>
+            <button type="button" class="swatch" data-role="text" data-color="#ec4899" style="background:#ec4899" aria-label="핑크색"></button>
+          </div>
         </div>
       </div>
 
@@ -212,8 +259,8 @@
       </div>
 
       <div class="btns">
-        <button class="secondary" id="renderBtn">미리보기 갱신</button>
-        <button class="primary" id="downloadBtn">JPG 저장</button>
+        <button class="action secondary" id="renderBtn">미리보기 갱신</button>
+        <button class="action primary" id="downloadBtn">JPG 저장</button>
       </div>
     </section>
 
@@ -235,8 +282,8 @@
     const textInput = document.getElementById('textInput');
     const canvasSizeInput = document.getElementById('canvasSize');
     const jpgQualitySelect = document.getElementById('jpgQuality');
-    const bgColorInput = document.getElementById('bgColor');
-    const textColorInput = document.getElementById('textColor');
+    const bgSwatches = document.getElementById('bgSwatches');
+    const textSwatches = document.getElementById('textSwatches');
     const paddingRatioSelect = document.getElementById('paddingRatio');
     const fontWeightSelect = document.getElementById('fontWeight');
     const renderBtn = document.getElementById('renderBtn');
@@ -244,6 +291,9 @@
     const metaText = document.getElementById('metaText');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+
+    let selectedBgColor = '#111111';
+    let selectedTextColor = '#ffffff';
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
@@ -257,31 +307,11 @@
       return safeSize;
     }
 
-    function splitLongWord(word, ctx, maxWidth) {
-      const chars = [...word];
-      const chunks = [];
-      let current = '';
-
-      for (const ch of chars) {
-        const test = current + ch;
-        if (ctx.measureText(test).width <= maxWidth || current.length === 0) {
-          current = test;
-        } else {
-          chunks.push(current);
-          current = ch;
-        }
-      }
-      if (current) chunks.push(current);
-      return chunks;
-    }
-
     function wrapParagraph(paragraph, ctx, maxWidth) {
       if (!paragraph) return [''];
-
       const result = [];
       let current = '';
       const chars = [...paragraph];
-
       for (const ch of chars) {
         const test = current + ch;
         if (ctx.measureText(test).width <= maxWidth || current.length === 0) {
@@ -296,15 +326,17 @@
     }
 
     function getWrappedLines(text, ctx, maxWidth) {
-      const paragraphs = text.replace(/\r\n/g, '\n').split('\n');
+      const paragraphs = text.replace(/
+/g, '
+').split('
+');
       const lines = [];
-
       paragraphs.forEach((paragraph, index) => {
         const wrapped = wrapParagraph(paragraph, ctx, maxWidth);
         lines.push(...wrapped);
-        if (index < paragraphs.length - 1) lines.push('\\n');
+        if (index < paragraphs.length - 1) lines.push('
+');
       });
-
       return lines;
     }
 
@@ -312,29 +344,23 @@
       const padding = size * paddingRatio;
       const maxWidth = size - padding * 2;
       const maxHeight = size - padding * 2;
-      let fontSize = Math.floor(size * 0.16);
+      let fontSize = Math.floor(size * 0.24);
       const minFontSize = 18;
 
       while (fontSize >= minFontSize) {
         const lineHeight = Math.round(fontSize * 1.35);
         ctx.font = `${fontWeight} ${fontSize}px 'Noto Sans KR', sans-serif`;
         const rawLines = getWrappedLines(text, ctx, maxWidth);
-        const visibleLines = rawLines.filter(line => line !== '\\n');
-        const explicitBreakCount = rawLines.filter(line => line === '\\n').length;
+        const visibleLines = rawLines.filter(line => line !== '
+');
+        const explicitBreakCount = rawLines.filter(line => line === '
+').length;
         const totalLineSlots = visibleLines.length + explicitBreakCount;
         const totalHeight = totalLineSlots * lineHeight;
-
         const tooWide = visibleLines.some(line => ctx.measureText(line).width > maxWidth + 1);
 
         if (!tooWide && totalHeight <= maxHeight) {
-          return {
-            fontSize,
-            lineHeight,
-            rawLines,
-            padding,
-            maxWidth,
-            totalHeight
-          };
+          return { fontSize, lineHeight, rawLines, totalHeight };
         }
         fontSize -= 1;
       }
@@ -342,26 +368,26 @@
       const fallbackFontSize = minFontSize;
       const fallbackLineHeight = Math.round(fallbackFontSize * 1.35);
       ctx.font = `${fontWeight} ${fallbackFontSize}px 'Noto Sans KR', sans-serif`;
-      const fallbackLines = getWrappedLines(text, ctx, maxWidth);
-      const visibleLines = fallbackLines.filter(line => line !== '\\n');
-      const explicitBreakCount = fallbackLines.filter(line => line === '\\n').length;
+      const rawLines = getWrappedLines(text, ctx, maxWidth);
+      const visibleLines = rawLines.filter(line => line !== '
+');
+      const explicitBreakCount = rawLines.filter(line => line === '
+').length;
       const totalLineSlots = visibleLines.length + explicitBreakCount;
       const totalHeight = totalLineSlots * fallbackLineHeight;
 
       return {
         fontSize: fallbackFontSize,
         lineHeight: fallbackLineHeight,
-        rawLines: fallbackLines,
-        padding,
-        maxWidth,
+        rawLines,
         totalHeight
       };
     }
 
     function draw() {
       const size = applyCanvasSize(canvasSizeInput.value);
-      const bgColor = bgColorInput.value;
-      const textColor = textColorInput.value;
+      const bgColor = selectedBgColor;
+      const textColor = selectedTextColor;
       const paddingRatio = parseFloat(paddingRatioSelect.value);
       const fontWeight = fontWeightSelect.value;
       const text = textInput.value || ' ';
@@ -377,9 +403,9 @@
       ctx.textBaseline = 'middle';
 
       let currentY = size / 2 - fit.totalHeight / 2 + fit.lineHeight / 2;
-
       fit.rawLines.forEach(line => {
-        if (line === '\\n') {
+        if (line === '
+') {
           currentY += fit.lineHeight;
           return;
         }
@@ -399,9 +425,25 @@
       link.click();
     }
 
-    [textInput, canvasSizeInput, jpgQualitySelect, bgColorInput, textColorInput, paddingRatioSelect, fontWeightSelect]
+    function bindSwatches(container, role) {
+      const buttons = container.querySelectorAll('.swatch');
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          buttons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          const color = button.dataset.color;
+          if (role === 'bg') selectedBgColor = color;
+          if (role === 'text') selectedTextColor = color;
+          draw();
+        });
+      });
+    }
+
+    [textInput, canvasSizeInput, jpgQualitySelect, paddingRatioSelect, fontWeightSelect]
       .forEach(el => el.addEventListener('input', draw));
 
+    bindSwatches(bgSwatches, 'bg');
+    bindSwatches(textSwatches, 'text');
     renderBtn.addEventListener('click', draw);
     downloadBtn.addEventListener('click', downloadJpg);
 
